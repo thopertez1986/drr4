@@ -56,6 +56,51 @@ export const PagesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setLoading(true);
       setError(null);
 
+      // Check if Supabase is properly configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
+        // Use mock data if Supabase is not configured
+        setPages([]);
+        setSections([]);
+        setResources([
+          {
+            id: '1',
+            title: 'Family Disaster Preparedness Plan Template',
+            description: 'A fillable guide to help families create their own emergency plan.',
+            file_url: '/resources/family-disaster-plan.pdf',
+            file_type: 'pdf',
+            file_size: 2048000,
+            category: 'guide',
+            subcategory: 'Family Planning',
+            tags: ['preparedness', 'family', 'planning', 'template'],
+            download_count: 1248,
+            featured: true,
+            status: 'published',
+            created_at: '2024-01-01T00:00:00Z',
+            updated_at: '2024-01-01T00:00:00Z'
+          },
+          {
+            id: '2',
+            title: 'Emergency Kit Checklist',
+            description: 'A comprehensive list of essential items for your emergency kit.',
+            file_url: '/resources/emergency-kit-checklist.pdf',
+            file_type: 'pdf',
+            file_size: 1024000,
+            category: 'guide',
+            subcategory: 'Emergency Supplies',
+            tags: ['emergency', 'kit', 'checklist', 'supplies'],
+            download_count: 987,
+            featured: true,
+            status: 'published',
+            created_at: '2024-01-01T00:00:00Z',
+            updated_at: '2024-01-01T00:00:00Z'
+          }
+        ]);
+        setLoading(false);
+        return;
+      }
       // Fetch pages
       const { data: pagesData, error: pagesError } = await supabase
         .from('pages')

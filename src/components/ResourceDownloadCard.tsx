@@ -1,6 +1,7 @@
 import React from 'react';
 import { Download, FileText, Eye, Calendar, Tag } from 'lucide-react';
 import { usePages } from '../contexts/PagesContext';
+import { useAnalytics } from '../utils/analytics';
 import type { Resource } from '../types';
 
 interface ResourceDownloadCardProps {
@@ -15,10 +16,12 @@ const ResourceDownloadCard: React.FC<ResourceDownloadCardProps> = ({
   showStats = true 
 }) => {
   const { incrementDownload } = usePages();
+  const { trackDownload } = useAnalytics();
 
   const handleDownload = async () => {
     try {
       await incrementDownload(resource.id);
+      trackDownload(resource.id, resource.title);
       // Open download link
       window.open(resource.file_url, '_blank');
     } catch (error) {

@@ -5,12 +5,14 @@ interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
   text?: string;
   fullScreen?: boolean;
+  className?: string;
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
   size = 'md', 
   text = 'Loading...', 
-  fullScreen = false 
+  fullScreen = false,
+  className = ''
 }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -33,14 +35,14 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+      <div className={`fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 ${className}`}>
         {content}
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center py-8">
+    <div className={`flex items-center justify-center py-8 ${className}`}>
       {content}
     </div>
   );

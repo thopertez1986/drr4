@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { Link } from 'react-router-dom';
+import LazyImage from './LazyImage';
 
 const ImageGallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -107,10 +108,12 @@ const ImageGallery: React.FC = () => {
                   key={index}
                   className="flex-shrink-0 w-64 h-64 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 relative group"
                 >
-                  <img
+                  <LazyImage
                     src={image.url}
                     alt={image.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
+                    width={256}
+                    height={256}
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-end">
                     <div className="p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">

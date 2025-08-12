@@ -76,7 +76,13 @@ const WeatherWidget: React.FC = () => {
   }
 
   return (
-    <div className={`bg-gradient-to-br ${getConditionColor(weather.condition)} rounded-lg shadow-lg p-6 text-white`}>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">Weather Conditions</h2>
+        <Activity className="h-5 w-5 text-gray-400" />
+      </div>
+      
+      <div className={`bg-gradient-to-br ${getConditionColor(weather.condition)} rounded-lg p-6 text-white`}>
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold">Current Weather</h3>
@@ -123,6 +129,7 @@ const WeatherWidget: React.FC = () => {
 
       <div className="text-xs opacity-75 mt-4">
         Last updated: {new Date().toLocaleTimeString()}
+      </div>
       </div>
     </div>
   );

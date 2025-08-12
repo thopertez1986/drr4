@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, MapPin, Camera, AlertTriangle } from 'lucide-react';
 import { BARANGAYS, INCIDENT_TYPES } from '../../utils/constants';
 import { validateRequired, validatePhone, sanitizeInput } from '../../utils/validation';
+import { validateFileUpload, rateLimit } from '../../utils/security';
 
 interface IncidentModalProps {
   isOpen: boolean;
@@ -44,15 +45,13 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, image: 'File size exceeds 5MB limit' }));
-      return;
-    }
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setErrors(prev => ({ ...prev, image: 'Only image files are allowed' }));
+    const validation = validateFileUpload(file, {
+      maxSize: 5 * 1024 * 1024,
+      allowedTypes: ['image/*']
+    });
+    
+    if (!validation.valid) {
+      setErrors(prev => ({ ...prev, image: validation.error || 'Invalid file' }));
       return;
     }
 
@@ -128,6 +127,12 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Rate limiting
+    if (!rateLimit('incident_report', 3, 60000)) {
+      setErrors(prev => ({ ...prev, form: 'Too many reports submitted. Please wait before submitting again.' }));
+      return;
+    }
     
     if (!validateForm()) {
       return;

@@ -4,6 +4,7 @@ import { usePages } from '../../contexts/PagesContext';
 import WeatherWidget from '../../components/WeatherWidget';
 import Analytics from '../../components/Analytics';
 import SocialMediaFeed from '../../components/SocialMediaFeed';
+import SystemStatus from '../../components/SystemStatus';
 import { 
   Newspaper, 
   Shield, 
@@ -89,48 +90,10 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weather Widget */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Weather Conditions</h2>
-            <Activity className="h-5 w-5 text-gray-400" />
-          </div>
-          <WeatherWidget />
-        </div>
+        <WeatherWidget />
 
-        {/* Quick Stats */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">System Status</h2>
-            <BarChart3 className="h-5 w-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Database Status</span>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm font-medium text-green-600">Connected</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Emergency System</span>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm font-medium text-green-600">Active</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Public Reporting</span>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm font-medium text-green-600">Enabled</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Last Backup</span>
-              <span className="text-sm text-gray-600">2 hours ago</span>
-            </div>
-          </div>
-        </div>
+        {/* System Status */}
+        <SystemStatus />
 
         {/* Recent Incident Reports */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">

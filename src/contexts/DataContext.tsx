@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { handleAsyncError } from '../utils/errorHandling';
 import type { Database } from '../lib/supabase';
 
 type NewsItem = Database['public']['Tables']['news']['Row'];
@@ -65,6 +66,83 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       setError(null);
 
+      // Check if Supabase is properly configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
+        // Use mock data if Supabase is not configured
+        setNews([
+          {
+            id: '1',
+            title: 'BDRRM Planning Training Workshop for Barangay Officials',
+            excerpt: 'On June 25, 2024, the Municipal Disaster Risk Reduction and Management Office (MDRRMO) conducted an essential training session...',
+            content: 'The Municipal Disaster Risk Reduction and Management Office (MDRRMO) of Pio Duran successfully conducted a comprehensive Barangay Disaster Risk Reduction and Management (BDRRM) Planning Training Workshop on June 25, 2024, at Barangay Basicao Interior.',
+            image: 'https://res.cloudinary.com/dedcmctqk/image/upload/v1750575265/487673077_1062718335885316_7552782387266701410_n_gexfn2.jpg',
+            author: 'MDRRMO Staff',
+            status: 'published',
+            date: '2024-06-29',
+            created_at: '2024-06-29T10:00:00Z',
+            updated_at: '2024-06-29T10:00:00Z'
+          },
+          {
+            id: '2',
+            title: 'Successful Nationwide Simultaneous Earthquake Drill Conducted',
+            excerpt: 'The municipality participated in the 2nd quarter nationwide simultaneous earthquake drill with over 5,000 participants...',
+            content: 'Pio Duran municipality successfully participated in the 2nd quarter nationwide simultaneous earthquake drill, demonstrating our commitment to disaster preparedness and community safety.',
+            image: 'https://res.cloudinary.com/dedcmctqk/image/upload/v1750575261/489043126_1065374988952984_1331524645056736117_n_fbmvch.jpg',
+            author: 'MDRRMO Staff',
+            status: 'published',
+            date: '2023-06-09',
+            created_at: '2023-06-09T10:00:00Z',
+            updated_at: '2023-06-09T10:00:00Z'
+          }
+        ]);
+        
+        setServices([
+          {
+            id: '1',
+            title: 'Disaster Prevention & Mitigation',
+            description: 'Immediate response to disaster-related emergencies with our trained response teams.',
+            icon: 'Shield',
+            tags: ['Search & Rescue', 'Medical Assistance', 'Fire Response'],
+            status: 'active',
+            created_at: '2024-01-01T00:00:00Z',
+            updated_at: '2024-01-01T00:00:00Z'
+          },
+          {
+            id: '2',
+            title: 'Disaster Preparedness',
+            description: 'Regular training programs for community members, volunteers, and responders.',
+            icon: 'Heart',
+            tags: ['First Aid Training', 'DRRM Workshops', 'Drills'],
+            status: 'active',
+            created_at: '2024-01-01T00:00:00Z',
+            updated_at: '2024-01-01T00:00:00Z'
+          }
+        ]);
+        
+        setGallery([
+          {
+            id: '1',
+            title: 'BDRRM Planning Training Workshop',
+            description: 'Training session on Barangay Disaster Risk Reduction and Management Planning at Barangay Basicao Interior.',
+            image: 'https://res.cloudinary.com/dedcmctqk/image/upload/v1750575265/487673077_1062718335885316_7552782387266701410_n_gexfn2.jpg',
+            category: 'Training',
+            date: '2024-06-25',
+            location: 'Barangay Basicao Interior',
+            tags: ['BDRRM', 'Training', 'Workshop', 'Barangay Officials'],
+            status: 'published',
+            featured: true,
+            created_at: '2024-06-25T00:00:00Z',
+            updated_at: '2024-06-25T00:00:00Z'
+          }
+        ]);
+        
+        setIncidents([]);
+        setLoading(false);
+        return;
+      }
       // Fetch news
       const { data: newsData, error: newsError } = await supabase
         .from('news')
@@ -111,7 +189,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // News functions
   const addNews = async (newsItem: Omit<NewsItem, 'id' | 'created_at' | 'updated_at'>) => {
-    try {
+    return handleAsyncError(async () => {
       const { data, error } = await supabase
         .from('news')
         .insert([newsItem])
@@ -120,14 +198,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error;
       setNews(prev => [data, ...prev]);
-    } catch (err) {
-      console.error('Error adding news:', err);
-      throw err;
-    }
+    }, 'Failed to add news article');
   };
 
   const updateNews = async (id: string, updates: Partial<NewsItem>) => {
-    try {
+    return handleAsyncError(async () => {
       const { data, error } = await supabase
         .from('news')
         .update(updates)
@@ -137,14 +212,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error;
       setNews(prev => prev.map(item => item.id === id ? data : item));
-    } catch (err) {
-      console.error('Error updating news:', err);
-      throw err;
-    }
+    }, 'Failed to update news article');
   };
 
   const deleteNews = async (id: string) => {
-    try {
+    return handleAsyncError(async () => {
       const { error } = await supabase
         .from('news')
         .delete()
@@ -152,10 +224,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error;
       setNews(prev => prev.filter(item => item.id !== id));
-    } catch (err) {
-      console.error('Error deleting news:', err);
-      throw err;
-    }
+    }, 'Failed to delete news article');
   };
 
   // Services functions

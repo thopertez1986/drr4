@@ -14,13 +14,21 @@ class DatabaseManager {
 
   async connectMySQL(config: MySQLConfig): Promise<boolean> {
     try {
+      // Disconnect existing connection first
+      if (this.mysqlConnection) {
+        await this.mysqlConnection.end();
+      }
+      
       this.mysqlConnection = await mysql.createConnection({
         host: config.host,
         user: config.user,
         password: config.password,
         database: config.database,
         port: config.port || 3306,
-        ssl: false
+        ssl: false,
+        connectTimeout: 10000,
+        acquireTimeout: 10000,
+        timeout: 10000
       });
 
       // Test connection

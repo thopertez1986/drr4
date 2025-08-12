@@ -1,12 +1,19 @@
 export const APP_CONFIG = {
   name: 'MDRRMO Pio Duran',
   description: 'Municipal Disaster Risk Reduction and Management Office',
-  version: '1.0.0',
+  version: '2.0.0',
   author: 'MDRRMO Team',
   contact: {
     email: 'mdrrmo@pioduran.gov.ph',
     phone: '911',
     address: 'Municipal Hall, Pio Duran, Albay'
+  },
+  features: {
+    offlineMode: true,
+    realTimeUpdates: true,
+    multiDatabase: true,
+    socialIntegration: true,
+    analytics: true
   }
 };
 

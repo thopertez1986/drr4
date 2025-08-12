@@ -61,7 +61,7 @@ const DatabaseSelector: React.FC = () => {
 
       {/* Connection Error */}
       {connectionError && (
-        <div className="text-xs text-red-600 mt-1">
+        <div className="text-xs text-yellow-600 mt-1">
           {connectionError}
         </div>
       )}

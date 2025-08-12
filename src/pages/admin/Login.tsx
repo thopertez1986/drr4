@@ -19,7 +19,14 @@ const Login: React.FC = () => {
     setError('');
 
     try {
-      const success = await login(username, password);
+      // Map username to email for demo
+      const emailMap: Record<string, string> = {
+        'admin': 'admin@mdrrmo.gov.ph',
+        'editor': 'editor@mdrrmo.gov.ph'
+      };
+      
+      const email = emailMap[username] || username;
+      const success = await login(email, password);
       if (success) {
         navigate('/admin');
       } else {
@@ -111,8 +118,8 @@ const Login: React.FC = () => {
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <h3 className="text-sm font-medium text-gray-700 mb-2">Demo Credentials:</h3>
             <div className="text-xs text-gray-600 space-y-1">
-              <p><strong>Admin:</strong> username: admin, password: admin123</p>
-              <p><strong>Editor:</strong> username: editor, password: editor123</p>
+              <p><strong>Admin:</strong> admin@mdrrmo.gov.ph / admin123</p>
+              <p><strong>Editor:</strong> editor@mdrrmo.gov.ph / editor123</p>
             </div>
           </div>
         </div>

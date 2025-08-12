@@ -44,13 +44,23 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const testSupabaseConnection = async () => {
     try {
+      // Check if Supabase is properly configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
+        setIsConnected(false);
+        setConnectionError('Supabase not configured. Using demo mode.');
+        return;
+      }
+      
       const { data, error } = await supabase.from('news').select('count').limit(1);
       if (error) throw error;
       setIsConnected(true);
       setConnectionError(null);
     } catch (error) {
       setIsConnected(false);
-      setConnectionError('Failed to connect to Supabase. Please check your configuration.');
+      setConnectionError('Supabase connection failed. Running in demo mode.');
       console.error('Supabase connection error:', error);
     }
   };
