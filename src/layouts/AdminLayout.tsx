@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotifications } from '../hooks/useNotifications';
+import NotificationSystem from '../components/NotificationSystem';
 import DatabaseSelector from '../components/DatabaseSelector';
 import { 
   LayoutDashboard, 
@@ -23,6 +25,7 @@ import {
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { notifications, removeNotification } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -48,6 +51,11 @@ const AdminLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <NotificationSystem 
+        notifications={notifications} 
+        onRemove={removeNotification} 
+      />
+      
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 

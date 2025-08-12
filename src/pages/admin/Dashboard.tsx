@@ -1,6 +1,9 @@
 import React from 'react';
 import { useData } from '../../contexts/DataContext';
 import { usePages } from '../../contexts/PagesContext';
+import WeatherWidget from '../../components/WeatherWidget';
+import Analytics from '../../components/Analytics';
+import SocialMediaFeed from '../../components/SocialMediaFeed';
 import { 
   Newspaper, 
   Shield, 
@@ -11,7 +14,9 @@ import {
   CheckCircle,
   XCircle,
   FileText,
-  Download
+  Download,
+  Activity,
+  BarChart3
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
@@ -83,6 +88,50 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Weather Widget */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Weather Conditions</h2>
+            <Activity className="h-5 w-5 text-gray-400" />
+          </div>
+          <WeatherWidget />
+        </div>
+
+        {/* Quick Stats */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">System Status</h2>
+            <BarChart3 className="h-5 w-5 text-gray-400" />
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Database Status</span>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span className="text-sm font-medium text-green-600">Connected</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Emergency System</span>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span className="text-sm font-medium text-green-600">Active</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Public Reporting</span>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span className="text-sm font-medium text-green-600">Enabled</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Last Backup</span>
+              <span className="text-sm text-gray-600">2 hours ago</span>
+            </div>
+          </div>
+        </div>
+
         {/* Recent Incident Reports */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="p-6 border-b border-gray-200">
@@ -94,9 +143,9 @@ const Dashboard: React.FC = () => {
                 {recentIncidents.map((incident) => (
                   <div key={incident.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{incident.incidentType}</h3>
+                      <h3 className="font-medium text-gray-900">{incident.incident_type}</h3>
                       <p className="text-sm text-gray-600">{incident.location}</p>
-                      <p className="text-xs text-gray-500">{incident.referenceNumber}</p>
+                      <p className="text-xs text-gray-500">{incident.reference_number}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`px-2 py-1 text-xs rounded-full ${
@@ -119,7 +168,18 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Recent News */}
+        {/* Social Media Activity */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Recent Social Activity</h2>
+          </div>
+          <div className="p-6">
+            <SocialMediaFeed maxPosts={3} showEngagement={false} />
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Popular Pages */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6 border-b border-gray-200">
@@ -192,23 +252,26 @@ const Dashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left">
+          <Link to="/admin/pages" className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left block">
             <FileText className="h-8 w-8 text-purple-500 mb-2" />
             <h3 className="font-medium text-gray-900">Create New Page</h3>
             <p className="text-sm text-gray-600">Add a new dynamic page</p>
-          </button>
-          <button className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left">
+          </Link>
+          <Link to="/admin/resources" className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left block">
             <Download className="h-8 w-8 text-green-500 mb-2" />
             <h3 className="font-medium text-gray-900">Add Resource</h3>
             <p className="text-sm text-gray-600">Upload new document</p>
-          </button>
-          <button className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left">
+          </Link>
+          <Link to="/admin/incidents" className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left block">
             <AlertTriangle className="h-8 w-8 text-red-500 mb-2" />
             <h3 className="font-medium text-gray-900">Review Reports</h3>
             <p className="text-sm text-gray-600">Check incident reports</p>
-          </button>
+          </Link>
         </div>
       </div>
+
+      {/* Analytics Section */}
+      <Analytics />
     </div>
   );
 };

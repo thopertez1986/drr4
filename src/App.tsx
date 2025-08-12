@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary';
+import LoadingSpinner from './components/LoadingSpinner';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DataProvider } from './contexts/DataContext';
 import { DatabaseProvider } from './contexts/DatabaseContext';
@@ -41,6 +43,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 function App() {
   return (
+    <ErrorBoundary>
     <DatabaseProvider>
       <AuthProvider>
         <DataProvider>
@@ -89,6 +92,7 @@ function App() {
         </DataProvider>
       </AuthProvider>
     </DatabaseProvider>
+    </ErrorBoundary>
   );
 }
 

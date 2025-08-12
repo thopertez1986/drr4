@@ -12,10 +12,10 @@ const IncidentReports: React.FC = () => {
 
   const filteredIncidents = incidents.filter(incident => {
     const matchesSearch = 
-      (incident.reporterName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (incident.reporter_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (incident.location || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (incident.incidentType || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (incident.referenceNumber || '').toLowerCase().includes(searchTerm.toLowerCase());
+      (incident.incident_type || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (incident.reference_number || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || incident.status === statusFilter;
     const matchesUrgency = urgencyFilter === 'all' || incident.urgency === urgencyFilter;
@@ -230,15 +230,15 @@ const IncidentReports: React.FC = () => {
               {filteredIncidents.map((incident) => (
                 <tr key={incident.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {incident.referenceNumber || 'N/A'}
+                    {incident.reference_number || 'N/A'}
                   </td>
                   <td className="px-6 py-4">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">{incident.reporterName || 'Unknown'}</div>
-                      <div className="text-sm text-gray-500">{incident.contactNumber || 'No contact'}</div>
+                      <div className="text-sm font-medium text-gray-900">{incident.reporter_name || 'Unknown'}</div>
+                      <div className="text-sm text-gray-500">{incident.contact_number || 'No contact'}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">{incident.incidentType || 'Not specified'}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{incident.incident_type || 'Not specified'}</td>
                   <td className="px-6 py-4 text-sm text-gray-900">{incident.location || 'Not specified'}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 text-xs rounded-full ${getUrgencyColor(incident.urgency)}`}>
@@ -260,7 +260,7 @@ const IncidentReports: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900">
-                    {incident.dateReported ? new Date(incident.dateReported).toLocaleDateString() : 'No date'}
+                    {incident.date_reported ? new Date(incident.date_reported).toLocaleDateString() : 'No date'}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-2">
@@ -309,12 +309,12 @@ const IncidentReports: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Reference Number</label>
-                  <p className="text-sm text-gray-900">{selectedIncident.referenceNumber || 'N/A'}</p>
+                  <p className="text-sm text-gray-900">{selectedIncident.reference_number || 'N/A'}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Date Reported</label>
                   <p className="text-sm text-gray-900">
-                    {selectedIncident.dateReported ? new Date(selectedIncident.dateReported).toLocaleString() : 'No date'}
+                    {selectedIncident.date_reported ? new Date(selectedIncident.date_reported).toLocaleString() : 'No date'}
                   </p>
                 </div>
               </div>
@@ -322,18 +322,18 @@ const IncidentReports: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Reporter Name</label>
-                  <p className="text-sm text-gray-900">{selectedIncident.reporterName || 'Unknown'}</p>
+                  <p className="text-sm text-gray-900">{selectedIncident.reporter_name || 'Unknown'}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Contact Number</label>
-                  <p className="text-sm text-gray-900">{selectedIncident.contactNumber || 'No contact'}</p>
+                  <p className="text-sm text-gray-900">{selectedIncident.contact_number || 'No contact'}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Incident Type</label>
-                  <p className="text-sm text-gray-900">{selectedIncident.incidentType || 'Not specified'}</p>
+                  <p className="text-sm text-gray-900">{selectedIncident.incident_type || 'Not specified'}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Location</label>

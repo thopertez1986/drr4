@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SEOHead from '../../components/SEOHead';
 import Hero from '../../components/Hero';
 import About from '../../components/About';
 import Services from '../../components/Services';
@@ -38,6 +39,12 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <SEOHead
+        title="MDRRMO Pio Duran - Building Resilient Communities"
+        description="Municipal Disaster Risk Reduction and Management Office of Pio Duran, Albay. Emergency response, disaster preparedness, and community safety services."
+        keywords="MDRRMO, disaster management, emergency response, Pio Duran, Albay, Philippines, disaster preparedness, emergency hotline"
+      />
+      
       <Hero 
         onEmergencyClick={() => setIsHotlineModalOpen(true)}
         onIncidentClick={() => setIsIncidentModalOpen(true)}

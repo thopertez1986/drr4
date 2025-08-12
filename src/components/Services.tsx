@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Heart, Truck, Home } from 'lucide-react';
+import { Shield, Heart, Truck, Home, FolderOpen } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { Link } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ const Services: React.FC = () => {
   const { services } = useData();
   const activeServices = services.filter(service => service.status === 'active');
 
-  const services = [
+  const defaultServices = [
     {
       icon: Shield,
       title: 'Disaster Prevention & Mitigation',
@@ -99,7 +99,7 @@ const Services: React.FC = () => {
         )}
 
         <div className="grid md:grid-cols-2 gap-8">
-          {services.map((service, index) => (
+          {defaultServices.map((service, index) => (
             <div
               key={index}
               className={`flex bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-l-4 ${service.color}`}

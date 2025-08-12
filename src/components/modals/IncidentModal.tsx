@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { X, MapPin, Camera, AlertTriangle } from 'lucide-react';
+import { BARANGAYS, INCIDENT_TYPES } from '../../utils/constants';
+import { validateRequired, validatePhone, sanitizeInput } from '../../utils/validation';
 
 interface IncidentModalProps {
   isOpen: boolean;
@@ -23,26 +25,13 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const barangays = [
-    'Barangay 1', 'Barangay 2', 'Barangay 3', 'Barangay 4', 'Barangay 5',
-    'Agol', 'Alabangpuro', 'Basicao Coastal', 'Basicao Interior', 'Banawan',
-    'Binodegahan', 'Buenavista', 'Buyo', 'Caratagan', 'Cuyaoyao',
-    'Flores', 'Lawinon', 'Macasitas', 'Malapay', 'Malidong',
-    'Mamlad', 'Marigondon', 'Nablangbulod', 'Oringon', 'Palapas',
-    'Panganiran', 'Rawis', 'Salvacion', 'Sto. Cristo', 'Sukip', 'Tibabo'
-  ];
-
-  const incidentTypes = [
-    'Fire', 'Flood', 'Landslide', 'Vehicular Accident', 'Medical Emergency', 'Others'
-  ];
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : sanitizeInput(value)
     }));
 
     // Clear error when user starts typing
@@ -119,12 +108,14 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.reporterName.trim()) {
+    if (!validateRequired(formData.reporterName)) {
       newErrors.reporterName = 'Name is required';
     }
 
-    if (!formData.contactNumber.trim()) {
+    if (!validateRequired(formData.contactNumber)) {
       newErrors.contactNumber = 'Contact number is required';
+    } else if (!validatePhone(formData.contactNumber)) {
+      newErrors.contactNumber = 'Please enter a valid phone number';
     }
 
     if (!formData.agreement) {
@@ -144,6 +135,9 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
 
     onSubmit({
       ...formData,
+      reporterName: formData.reporterName,
+      contactNumber: formData.contactNumber,
+      incidentType: formData.incidentType,
       imageFile,
       timestamp: new Date().toISOString()
     });
@@ -240,7 +234,7 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mb-2"
             >
               <option value="">Select Barangay</option>
-              {barangays.map((barangay) => (
+              {BARANGAYS.map((barangay) => (
                 <option key={barangay} value={barangay}>
                   {barangay}
                 </option>
@@ -275,7 +269,7 @@ const IncidentModal: React.FC<IncidentModalProps> = ({ isOpen, onClose, onSubmit
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
-              {incidentTypes.map((type) => (
+              {INCIDENT_TYPES.map((type) => (
                 <option key={type} value={type}>
                   {type}
                 </option>

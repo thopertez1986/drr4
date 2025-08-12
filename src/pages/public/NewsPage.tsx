@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Search, Filter, Tag, Eye, Share2, ArrowRight, Clock, User } from 'lucide-react';
+import { Calendar, Search, Filter, Tag, Eye, Share2, ArrowRight, Clock, User, Users, Phone, AlertTriangle } from 'lucide-react';
 import { useData } from '../../contexts/DataContext';
+import { Link } from 'react-router-dom';
 import SocialShareButtons from '../../components/SocialShareButtons';
 
 const NewsPage: React.FC = () => {

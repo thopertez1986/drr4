@@ -217,9 +217,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .insert([{ 
           ...incident, 
           reference_number: referenceNumber,
-          reporter_name: incident.reporterName,
-          contact_number: incident.contactNumber,
-          incident_type: incident.incidentType
+          reporter_name: (incident as any).reporterName || incident.reporter_name,
+          contact_number: (incident as any).contactNumber || incident.contact_number,
+          incident_type: (incident as any).incidentType || incident.incident_type
         }])
         .select()
         .single();

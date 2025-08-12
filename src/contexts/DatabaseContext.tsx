@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { databaseManager } from '../lib/database';
 
 type DatabaseType = 'supabase' | 'mysql';
 
@@ -59,13 +60,24 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setConnectionError(null);
 
     if (config.type === 'mysql') {
-      // MySQL is not supported in browser environment
-      setConnectionError('MySQL is not supported in browser environment. Please use Supabase.');
-      return;
+      if (!config.mysql) {
+        setConnectionError('MySQL configuration is required');
+        return;
+      }
+
+      const success = await databaseManager.connectMySQL(config.mysql);
+      if (success) {
+        setDatabaseType('mysql');
+        setIsConnected(true);
+        setConnectionError(null);
+      } else {
+        setConnectionError('Failed to connect to MySQL. Please check your configuration.');
+      }
     } else {
       await testSupabaseConnection();
       if (isConnected) {
         setDatabaseType('supabase');
+        await databaseManager.disconnectMySQL();
       }
     }
   };

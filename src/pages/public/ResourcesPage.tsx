@@ -149,6 +149,7 @@ const ResourcesPage: React.FC = () => {
         </div>
 
         {/* Search and Filter */}
+        <div className="mb-12">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
@@ -179,9 +180,11 @@ const ResourcesPage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
 
           {/* Featured Resources */}
           {featuredResources.length > 0 && (
+            <div className="mb-12">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Featured Resources</h2>
               <div className="w-24 h-1 bg-yellow-500 mx-auto mb-6"></div>
@@ -195,9 +198,11 @@ const ResourcesPage: React.FC = () => {
                 <ResourceDownloadCard key={resource.id} resource={resource} />
               ))}
             </div>
+            </div>
           )}
 
           {/* All Resources */}
+          <div className="mb-12">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">All Resources ({filteredResources.length})</h2>
             <div className="w-24 h-1 bg-red-500 mx-auto mb-6"></div>
@@ -231,8 +236,10 @@ const ResourcesPage: React.FC = () => {
               </button>
             </div>
           )}
+          </div>
 
           {/* Resource Statistics */}
+          <div className="mb-12">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Resource Statistics</h2>
             <div className="w-24 h-1 bg-red-500 mx-auto mb-6"></div>
@@ -251,6 +258,7 @@ const ResourcesPage: React.FC = () => {
                 <p className="text-gray-600">{stat.description}</p>
               </div>
             ))}
+          </div>
           </div>
         </div>
       </div>

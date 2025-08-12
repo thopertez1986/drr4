@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Calendar, AlertTriangle, Home, CheckCircle, Mountain, Zap, Cloud, Flame, Globe, Thermometer, Waves, Users, Building, Download, FileText } from 'lucide-react';
+import { Shield, Calendar, AlertTriangle, Home, CheckCircle, Mountain, Zap, Cloud, Flame, Globe, Thermometer, Waves, Users, Building, Download, FileText, FolderOpen, Search, BarChart3, ArrowRight } from 'lucide-react';
 import { usePages } from '../../contexts/PagesContext';
 import { Link } from 'react-router-dom';
 
