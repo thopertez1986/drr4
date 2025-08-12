@@ -121,58 +121,68 @@ const Gallery: React.FC = () => {
         </div>
 
           {/* Featured Items */}
-          {featuredItems.length > 0 && (
-            <h2 className="text-2xl font-bold text-blue-900 mb-6">Featured</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredItems.map((item) => (
-                <div key={item.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                  <div className="relative">
-                    <img
-                      src={item.image || 'https://images.pexels.com/photos/6146970/pexels-photo-6146970.jpeg'}
-                      alt={item.title}
-                      className="w-full h-64 object-cover"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                        Featured
-                      </span>
-                    </div>
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                        {item.category || 'Event'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-blue-900 mb-2">{item.title}</h3>
-                    <p className="text-gray-600 mb-4">{item.description || 'No description available'}</p>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Calendar size={16} className="mr-2" />
-                        {item.date ? new Date(item.date).toLocaleDateString() : 'No date'}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <MapPin size={16} className="mr-2" />
-                        {item.location || 'Location not specified'}
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {(item.tags || []).map((tag, index) => (
-                        <span
-                          key={index}
-                          className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+        {featuredItems.length > 0 && (
+  <>
+    <h2 className="text-2xl font-bold text-blue-900 mb-6">Featured</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {featuredItems.map((item) => (
+        <div
+          key={item.id}
+          className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+        >
+          <div className="relative">
+            <img
+              src={
+                item.image ||
+                'https://images.pexels.com/photos/6146970/pexels-photo-6146970.jpeg'
+              }
+              alt={item.title}
+              className="w-full h-64 object-cover"
+            />
+            <div className="absolute top-4 left-4">
+              <span className="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                Featured
+              </span>
+            </div>
+            <div className="absolute top-4 right-4">
+              <span className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
+                {item.category || 'Event'}
+              </span>
+            </div>
+          </div>
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-blue-900 mb-2">{item.title}</h3>
+            <p className="text-gray-600 mb-4">
+              {item.description || 'No description available'}
+            </p>
+
+            <div className="space-y-2 mb-4">
+              <div className="flex items-center text-sm text-gray-500">
+                <Calendar size={16} className="mr-2" />
+                {item.date ? new Date(item.date).toLocaleDateString() : 'No date'}
+              </div>
+              <div className="flex items-center text-sm text-gray-500">
+                <MapPin size={16} className="mr-2" />
+                {item.location || 'Location not specified'}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {(item.tags || []).map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
+                >
+                  {tag}
+                </span>
               ))}
             </div>
-          )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </>
+)}
 
           {/* All Items */}
           <h2 className="text-2xl font-bold text-blue-900 mb-6">
