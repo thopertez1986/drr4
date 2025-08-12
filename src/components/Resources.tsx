@@ -155,7 +155,7 @@ const Resources: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+     
     </section>
   );
 };
