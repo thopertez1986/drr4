@@ -262,7 +262,7 @@ const ResourcesPage: React.FC = () => {
           </div>
         </div>
       </div>
-S  );
+ );
 };
 
 export default ResourcesPage;
