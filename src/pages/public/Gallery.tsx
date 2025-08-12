@@ -1,43 +1,89 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Tag, Search, Filter } from 'lucide-react';
-import { useData } from '../../contexts/DataContext';
+import { FileText, Download, Search, BarChart3, ClipboardList, MapPin, Shield, Users, Award, FolderOpen } from 'lucide-react';
+import { usePages } from '../../contexts/PagesContext';
+import ResourceDownloadCard from '../../components/ResourceDownloadCard';
 import { Link } from 'react-router-dom';
 
-const Gallery: React.FC = () => {
-  const { gallery } = useData();
+const ResourcesPage: React.FC = () => {
+  const { resources } = usePages();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const publishedGallery = gallery.filter(item => item.status === 'published');
-  const categories = ['all', ...Array.from(new Set(publishedGallery.map(item => item.category).filter(Boolean)))];
+  const publishedResources = resources.filter(resource => resource.status === 'published');
+  const featuredResources = publishedResources.filter(resource => resource.featured);
 
-  const filteredItems = publishedGallery.filter(item => {
+  const filteredResources = publishedResources.filter(resource => {
     const matchesSearch = 
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.location || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.tags || []).some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+      resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || resource.category === selectedCategory;
     
     return matchesSearch && matchesCategory;
   });
 
-  const featuredItems = filteredItems.filter(item => item.featured);
+  const resourceCategories = [
+    {
+      id: 'guides',
+      name: 'Preparedness Guides',
+      description: 'Essential safety information and planning templates',
+      icon: Shield,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100',
+      count: publishedResources.filter(r => r.category === 'guide').length
+    },
+    {
+      id: 'plans',
+      name: 'Plans & Reports',
+      description: 'Official strategic documents and annual reports',
+      icon: FileText,
+      color: 'text-green-600',
+      bgColor: 'bg-green-100',
+      count: publishedResources.filter(r => r.category === 'plan' || r.category === 'report').length
+    },
+    {
+      id: 'forms',
+      name: 'Forms',
+      description: 'Downloadable forms for various purposes',
+      icon: ClipboardList,
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-100',
+      count: publishedResources.filter(r => r.category === 'form').length
+    },
+    {
+      id: 'maps',
+      name: 'Maps',
+      description: 'Detailed hazard and evacuation maps',
+      icon: MapPin,
+      color: 'text-red-600',
+      bgColor: 'bg-red-100',
+      count: publishedResources.filter(r => r.category === 'map').length
+    }
+  ];
 
-  // If no gallery items available, show admin link
-  if (publishedGallery.length === 0) {
+  const categories = ['all', 'guide', 'form', 'map', 'report', 'plan', 'manual'];
+
+  const resourceStats = [
+    { value: publishedResources.length.toString(), label: 'Total Resources', description: 'Documents and maps available' },
+    { value: publishedResources.reduce((sum, r) => sum + r.download_count, 0).toLocaleString(), label: 'Total Downloads', description: 'Resources downloaded' },
+    { value: '95%', label: 'User Satisfaction', description: 'Based on feedback surveys' },
+    { value: '24/7', label: 'Access Availability', description: 'Resources available anytime' }
+  ];
+
+  // If no resources available, show admin link
+  if (publishedResources.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-20">
         <div className="container mx-auto px-6">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-blue-900 mb-8">Gallery</h1>
+            <h1 className="text-4xl font-bold text-blue-900 mb-8">Resources & Downloads</h1>
             <div className="bg-white rounded-xl shadow-lg p-12">
-              <Tag className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Gallery Items Available</h2>
-              <p className="text-gray-600 mb-6">Photos and activities will appear here once uploaded by the admin.</p>
+              <FolderOpen className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Resources Available</h2>
+              <p className="text-gray-600 mb-6">Resources will appear here once uploaded by the admin.</p>
               <Link 
-                to="/admin/gallery"
+                to="/admin/resources"
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Users className="mr-2" size={16} />
@@ -56,10 +102,10 @@ const Gallery: React.FC = () => {
       <section className="bg-blue-950 text-white py-16">
         <div className="container mx-auto px-6">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Gallery</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Resources & Downloads</h1>
             <div className="w-24 h-1 bg-yellow-500 mx-auto mb-6"></div>
             <p className="text-xl text-blue-200 max-w-3xl mx-auto">
-              Explore our collection of activities, training sessions, and community events
+              Essential documents, forms, and maps to help residents prepare for and respond to various hazards
             </p>
           </div>
         </div>
@@ -67,44 +113,56 @@ const Gallery: React.FC = () => {
 
       <div className="container mx-auto px-6">
         <div className="py-16">
-          {/* Stats */}
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
-            <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">{publishedGallery.length}</div>
-              <div className="text-gray-600">Total Items</div>
-            </div>
-            <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">{featuredItems.length}</div>
-              <div className="text-gray-600">Featured</div>
-            </div>
-            <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">{categories.length - 1}</div>
-              <div className="text-gray-600">Categories</div>
-            </div>
-            <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-              <div className="text-3xl font-bold text-orange-600 mb-2">
-                {new Date().getFullYear() - 2020}+
-              </div>
-              <div className="text-gray-600">Years Active</div>
-            </div>
+          {/* Notice */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-12">
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Note:</strong> All information materials here are for public consumption. 
+              Request for high-resolution copies for printing and/or reproduction can be requested through the Public Information Unit.
+            </p>
           </div>
 
-          {/* Search and Filter */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search gallery items..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Filter size={20} className="text-gray-400" />
+          {/* Resource Categories */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Resource Categories</h2>
+            <div className="w-24 h-1 bg-red-500 mx-auto mb-6"></div>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Browse our comprehensive collection of disaster management resources organized by category
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {resourceCategories.map((category) => (
+              <button 
+                key={category.id} 
+                onClick={() => setSelectedCategory(category.id === 'guides' ? 'guide' : category.id)}
+                className="bg-white rounded-lg p-6 shadow-lg text-center hover:shadow-xl transition-shadow group cursor-pointer w-full"
+              >
+                <div className={`w-16 h-16 ${category.bgColor} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                  <category.icon className={`${category.color} text-2xl`} size={32} />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">{category.name}</h3>
+                <p className="text-gray-600 text-sm mb-4">{category.description}</p>
+                <span className={`${category.color} text-sm font-medium`}>{category.count} Documents</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Search and Filter */}
+        <div className="mb-12">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search resources..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -112,146 +170,61 @@ const Gallery: React.FC = () => {
               >
                 {categories.map((category) => (
                   <option key={category} value={category}>
-                    {category === 'all' ? 'All Categories' : category}
+                    {category === 'all' ? 'All Categories' : category.charAt(0).toUpperCase() + category.slice(1)}
                   </option>
                 ))}
               </select>
+              
+              <div className="text-sm text-gray-600 flex items-center">
+                {filteredResources.length} resource{filteredResources.length !== 1 ? 's' : ''} found
+              </div>
             </div>
           </div>
         </div>
 
-          {/* Featured Items */}
-        {featuredItems.length > 0 && (
-  <>
-    <h2 className="text-2xl font-bold text-blue-900 mb-6">Featured</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {featuredItems.map((item) => (
-        <div
-          key={item.id}
-          className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
-        >
-          <div className="relative">
-            <img
-              src={
-                item.image ||
-                'https://images.pexels.com/photos/6146970/pexels-photo-6146970.jpeg'
-              }
-              alt={item.title}
-              className="w-full h-64 object-cover"
-            />
-            <div className="absolute top-4 left-4">
-              <span className="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                Featured
-              </span>
-            </div>
-            <div className="absolute top-4 right-4">
-              <span className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                {item.category || 'Event'}
-              </span>
-            </div>
-          </div>
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-blue-900 mb-2">{item.title}</h3>
-            <p className="text-gray-600 mb-4">
-              {item.description || 'No description available'}
-            </p>
-
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center text-sm text-gray-500">
-                <Calendar size={16} className="mr-2" />
-                {item.date ? new Date(item.date).toLocaleDateString() : 'No date'}
-              </div>
-              <div className="flex items-center text-sm text-gray-500">
-                <MapPin size={16} className="mr-2" />
-                {item.location || 'Location not specified'}
-              </div>
+          {/* Featured Resources */}
+          {featuredResources.length > 0 && (
+            <div className="mb-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Featured Resources</h2>
+              <div className="w-24 h-1 bg-yellow-500 mx-auto mb-6"></div>
+              <p className="text-gray-600 max-w-3xl mx-auto">
+                Most important and frequently accessed resources
+              </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {(item.tags || []).map((tag, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
-                >
-                  {tag}
-                </span>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredResources.map((resource) => (
+                <ResourceDownloadCard key={resource.id} resource={resource} />
               ))}
             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </>
-)}
+            </div>
+          )}
 
-          {/* All Items */}
-          <h2 className="text-2xl font-bold text-blue-900 mb-6">
-            All Items ({filteredItems.length})
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                <div className="relative">
-                  <img
-                    src={item.image || 'https://images.pexels.com/photos/6146970/pexels-photo-6146970.jpeg'}
-                    alt={item.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-2 right-2">
-                    <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
-                      {item.category || 'Event'}
-                    </span>
-                  </div>
-                  {item.featured && (
-                    <div className="absolute top-2 left-2">
-                      <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
-                        Featured
-                      </span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="p-4">
-                  <h3 className="font-semibold text-blue-900 mb-2 line-clamp-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.description || 'No description available'}</p>
-                  
-                  <div className="space-y-1 mb-3">
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Calendar size={12} className="mr-1" />
-                      {item.date ? new Date(item.date).toLocaleDateString() : 'No date'}
-                    </div>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <MapPin size={12} className="mr-1" />
-                      {item.location || 'Location not specified'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    {(item.tags || []).slice(0, 3).map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                    {(item.tags || []).length > 3 && (
-                      <span className="text-xs text-gray-500">+{(item.tags || []).length - 3}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
+          {/* All Resources */}
+          <div className="mb-12">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">All Resources ({filteredResources.length})</h2>
+            <div className="w-24 h-1 bg-red-500 mx-auto mb-6"></div>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              {selectedCategory === 'all' 
+                ? 'Browse all available resources and documents'
+                : `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} resources`
+              }
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredResources.map((resource) => (
+              <ResourceDownloadCard key={resource.id} resource={resource} />
             ))}
           </div>
 
-          {/* No Results */}
-          {filteredItems.length === 0 && (
+          {filteredResources.length === 0 && (
             <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Tag size={48} className="mx-auto" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No items found</h3>
-              <p className="text-gray-500 mb-4">Try adjusting your search or filter criteria</p>
+              <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No resources found</h3>
+              <p className="text-gray-500">Try adjusting your search or filter criteria</p>
               <button
                 onClick={() => {
                   setSearchTerm('');
@@ -263,10 +236,34 @@ const Gallery: React.FC = () => {
               </button>
             </div>
           )}
+          </div>
+
+          {/* Resource Statistics */}
+          <div className="mb-12">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Resource Statistics</h2>
+            <div className="w-24 h-1 bg-red-500 mx-auto mb-6"></div>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Overview of our resource collection and usage metrics
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8">
+            {resourceStats.map((stat, index) => (
+              <div key={index} className="text-center bg-white rounded-lg p-8 shadow-lg">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-blue-600">{stat.value}</span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">{stat.label}</h3>
+                <p className="text-gray-600">{stat.description}</p>
+              </div>
+            ))}
+          </div>
+          </div>
         </div>
       </div>
-    </div>
+   // </div>
   );
 };
 
-export default Gallery;
+export default ResourcesPage;
